@@ -3,15 +3,13 @@ package com.space.model;
 import javax.persistence.*;
 import java.util.Date;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 @Entity
 @Table(name = "ship")
 public class Ship {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -27,16 +25,16 @@ public class Ship {
     @Column(name = "prodDate")
     private Date prodDate;
 
-    @Column (name = "isUsed")
+    @Column(name = "isUsed")
     private Boolean isUsed;
 
-    @Column (name = "speed")
+    @Column(name = "speed")
     private Double speed;
 
-    @Column (name = "crewSize")
+    @Column(name = "crewSize")
     private Integer crewSize;
 
-    @Column (name = "rating")
+    @Column(name = "rating")
     private Double rating;
 
     public Long getId() {
@@ -110,4 +108,5 @@ public class Ship {
     public void setRating(Double rating) {
         this.rating = rating;
     }
+
 }
