@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -62,8 +61,7 @@ public class ShipServiceImpl implements ShipService {
         if (!shipRepository.existsById(id)) {
             throw new ShipNotFoundException("Ship not found");
         }
-        Optional<Ship> optional = shipRepository.findById(id);
-        return optional.get();
+        return shipRepository.findById(id).orElse(null);
     }
 
     @Override
