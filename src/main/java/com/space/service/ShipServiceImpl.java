@@ -1,10 +1,11 @@
 package com.space.service;
 
-import com.space.controller.ShipOrder;
 import com.space.model.Ship;
-import com.space.model.ShipType;
 import com.space.repository.ShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +23,16 @@ public class ShipServiceImpl implements ShipService {
     private ShipRepository shipRepository;
 
     @Override
-    public List<Ship> getAllShips(String name, String planet, ShipType shipType, Long after, Long before, Boolean isUsed, Double minSpeed, Double maxSpeed, Integer minCrewSize, Integer maxCrewSize, Double minRating, Double maxRating, ShipOrder order, Integer pageNumber, Integer pageSize) {
-        return shipRepository.findAll();
+    public Page<Ship> getAllShips(Specification<Ship> specification, Pageable pageable) {
+        return shipRepository.findAll(specification, pageable);
     }
 
-     @Override
+    @Override
+    public List<Ship> getAllShips(Specification<Ship> specification) {
+        return shipRepository.findAll(specification);
+    }
+
+    @Override
     public Ship createShip(Ship ship) {
         if (ship.getName() == null
                 || ship.getPlanet() == null
@@ -50,7 +56,7 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public Ship getShipById(Long id) {
-        if (id == 0) {
+        if (id == null || id == 0) {
             throw new BadRequestException("Invalid id");
         }
         if (!shipRepository.existsById(id)) {
@@ -63,7 +69,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public Ship updateShip(Long id, Ship ship) {
         checkShipFields(ship);
-        if (id == 0) {
+        if (id == null || id == 0) {
             throw new BadRequestException("Invalid id");
         }
         if (!shipRepository.existsById(id)) {
@@ -98,7 +104,7 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public void deleteShipById(Long id) {
-        if (id == 0) {
+        if (id == null || id == 0) {
             throw new BadRequestException("Invalid id");
         }
         if (!shipRepository.existsById(id)) {
@@ -127,7 +133,7 @@ public class ShipServiceImpl implements ShipService {
             throw new BadRequestException("Incorrect planet. Set length of planet name between 1..50 chars");
         }
         if (ship.getSpeed() != null && (ship.getSpeed() < 0.01 || ship.getSpeed() > 0.99)) {
-            throw new BadRequestException("Incorreect speed. Set speed between 0.01..0.99");
+            throw new BadRequestException("Incorrect speed. Set speed between 0.01..0.99");
         }
         if (ship.getCrewSize() != null && (ship.getCrewSize() < 1 || ship.getCrewSize() > 9999)) {
             throw new BadRequestException("Incorrect crewSize. Set crewSize between 1..9999");
